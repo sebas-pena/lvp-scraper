@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
+
 // Posible leagues:
 // 1. superliga = League of Legends
 // 2. vrlrising = Valorant
@@ -100,13 +101,10 @@ const getPlayer = async (playerName, league) => {
       el
     );
 
-    // son muchos span unidos
-
     status.each((i, el) => {
       let stat = $(el).text().trim().split(" ");
       playerStats[stat[0]] = stat[1];
     });
-
     matchesData.push({
       champion,
       rival,

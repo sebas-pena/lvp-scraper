@@ -8,14 +8,25 @@ const getTeam = async (teamName, league) => {
   const $ = cheerio.load(res)
 
   // MATCHES
+  let matches = []
+
   $("#owl-round > div").each((i, el) => {
     let teams = $(".team", el)
     teams = {
       local: $(teams[0]).text().trim(),
       visitor: $(teams[1]).text().trim(),
     }
-  })
+    let date = $(".match-info > span:nth-child(2)", el).text()
+    let played = date * 1000 < +new Date()
+    let result = $(".match-info > span:first-child", el).text()
 
+    matches.push({
+      teams,
+      date,
+      played,
+      result: played ? result : null,
+    })
+  })
   const squad = []
 }
 

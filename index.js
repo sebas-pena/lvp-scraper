@@ -1,6 +1,5 @@
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
-
 // Posible leagues:
 // 1. superliga = League of Legends
 // 2. vrlrising = Valorant
@@ -8,8 +7,6 @@ const cheerio = require("cheerio");
 // url examples:
 // https://superliga.lvp.global/jugador/whiteknight/
 // https://vrlrising.lvp.global/jugador/neptuNo/
-
-let ii = 0;
 
 const getPlayer = async (playerName, league) => {
   const url = `https://${league}.lvp.global/jugador/${playerName}`;
@@ -63,9 +60,8 @@ const getPlayer = async (playerName, league) => {
 
   let matches = $("#dynamic-result-template > div:last-child a");
   let matchesData = [];
-
   matches.each((i, el) => {
-    const champion = $("div  div div.table-champs-resp img.champ", el).attr(
+    const champion = $("div div div.table-champs-resp img.champ", el).attr(
       "alt"
     );
     if (!champion) return;
@@ -98,25 +94,33 @@ const getPlayer = async (playerName, league) => {
             rival: matchScore[1],
           });
     }
+    let playerStats = {};
+    let status = $(
+      "div > div.second-section-responsive > div.table-result ",
+      el
+    );
 
-    let playerStats;
-    $("div div div.table-result", el).each((_, el) => {
-      if (ii == 1) return;
-      console.log(el.children[0]);
-      ii = 1;
+    // son muchos span unidos
+
+    status.each((i, el) => {
+      let stat = $(el).text().trim().split(" ");
+      playerStats[stat[0]] = stat[1];
     });
 
-    /* console.log({
-			rival,
-			date,
-			champion,
-		}) */
+    matchesData.push({
+      champion,
+      rival,
+      date,
+      result,
+      matchUrl,
+      playerStats,
+    });
   });
-
   return {
     playerInfo,
     playerStats,
     mostUsed,
+    matches: matchesData,
   };
 };
 
@@ -127,4 +131,4 @@ const getTeam = async (teamName, league) => {
   return data;
 };
 
-getPlayer("whiteknight", "superliga"); /* .then((res) => console.log(res))  */
+getPlayer("whiteknight", "superliga").then((res) => console.log(res));

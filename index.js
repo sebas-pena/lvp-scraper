@@ -10,3 +10,4 @@ const getTeam = require("./getTeam")
 
 // getPlayer("whiteknight", "superliga").then((res) => console.log(res))
 getTeam("bar", "superliga")
+//.then((res) => console.log(res))
